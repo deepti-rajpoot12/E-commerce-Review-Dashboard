@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReviewIntel Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: whitesmoke;
+      color: #fff;
+    }
+
+
+/* Layout */
+.container {
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: linear-gradient(180deg, #5f5cff, #7b78ff);
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: #0f172a;
+  border-radius: 14px;
+  padding: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* Charts */
+.top-section {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1.5fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* AI Summary */
+.ai-summary .item {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* Bottom */
+.bottom {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Inbox */
+.review {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.tag {
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.positive { background: #d4f8e8; color: green; }
+.negative { background: #fde2e2; color: red; }
+.neutral { background: #fff4d4; color: orange; }
+
+/* Response */
+textarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+/* Button */
+button {
+  background: #5f5cff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>ReviewIntel</h2>
+  <ul>
+    <li>Overview</li>
+    <li>Unified Inbox</li>
+    <li>Analytics</li>
+    <li>Issues</li>
+    <li>Alerts</li>
+    <li>Responses</li>
+    <li>AI Summary</li>
+  </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+<!-- KPI Cards -->
+<div class="cards">
+  <div class="card"><h4>Total</h4><h2>12,845</h2></div>
+  <div class="card"><h4>Rating</h4><h2>4.2</h2></div>
+  <div class="card"><h4 style="color:green;">Positive</h4><h2>7,842</h2></div>
+  <div class="card"><h4 style="color:red;">Negative</h4><h2>2,945</h2></div>
+  <div class="card"><h4 style="color:orange;">Neutral</h4><h2>2,058</h2></div>
+</div>
+
+<!-- Charts + AI -->
+<div class="top-section">
+
+<div class="card">
+  <h4>Sentiment</h4>
+  <canvas id="sentimentChart"></canvas>
+</div>
+
+<div class="card">
+  <h4>Top Issues</h4>
+  <canvas id="issuesChart"></canvas>
+</div>
+
+<div class="card">
+  <h4>Platforms</h4>
+  <canvas id="platformChart"></canvas>
+</div>
+
+<div class="card ai-summary">
+  <h4>🤖 AI Summary</h4>
+
+  <div class="item">🚨 Delivery complaints increased 28%</div>
+  <div class="item">✅ Product quality mostly positive</div>
+  <div class="item">⚠️ Negative reviews higher on Flipkart</div>
+</div>
+
+</div>
+
+<!-- Bottom -->
+<div class="bottom">
+
+<!-- Inbox -->
+<div class="card">
+  <h3>📥 Unified Inbox</h3>
+
+  <div class="review">
+    Rahul ⭐⭐⭐⭐⭐ 
+    <span class="tag positive">Positive</span>
+  </div>
+
+  <div class="review">
+    Priya ⭐⭐ 
+    <span class="tag negative">Negative</span>
+  </div>
+
+  <div class="review">
+    Amit ⭐⭐⭐ 
+    <span class="tag neutral">Neutral</span>
+  </div>
+
+</div>
+
+<!-- Response Tool -->
+<div class="card">
+  <h3>💬 Response Tool</h3>
+
+  <p><b>Priya:</b> Delivery was late</p>
+
+  <textarea>
+Hi Priya,
+We are sorry for the delay. We are improving delivery.
+  </textarea>
+
+  <br><br>
+  <button>Send Reply</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+new Chart(document.getElementById('sentimentChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Positive', 'Negative', 'Neutral'],
+    datasets: [{
+      data: [7842, 2945, 2058],
+      backgroundColor: ['#4caf50','#f44336','#ff9800']
+    }]
+  }
+});
+
+new Chart(document.getElementById('issuesChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Delivery','Quality','Size','Packaging'],
+    datasets: [{
+      data: [1342,1023,612,492],
+      backgroundColor: '#5f5cff'
+    }]
+  }
+});
+
+new Chart(document.getElementById('platformChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Amazon','Flipkart','Website'],
+    datasets: [{
+      data: [5642,3256,2145],
+      backgroundColor: ['#ff9800','#2196f3','#4caf50']
+    }]
+  }
+});
+</script>
+
+</body>
+</html>
