@@ -74,12 +74,6 @@ project/
 
 ---
 
-## 📸 Preview
-
-*Add screenshot here*
-
----
-
 ## 📌 Note
 
 This project is a **frontend UI implementation**.
